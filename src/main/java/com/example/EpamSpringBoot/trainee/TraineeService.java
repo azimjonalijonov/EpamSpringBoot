@@ -8,6 +8,7 @@ import com.example.EpamSpringBoot.util.exception.ValidatorException;
 import com.example.EpamSpringBoot.util.validation.impl.TraineeErrorValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,7 @@ private final UserService userService;
 		user.setActive(bool);
 		userService.update(user);
 		return trainee;	}
+	@Transactional
 
 	public void deleteByUsername(String username) {
 		User user =userService.readByUsername(username);

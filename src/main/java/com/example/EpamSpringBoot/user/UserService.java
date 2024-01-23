@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
+
 @Service
 public class UserService {
 
@@ -33,6 +35,10 @@ private final UserRepository userRepository;
 
 	public User create(User createRequest) {
 		if (userErrorValidator.isValidParamsForCreate(createRequest)) {
+			String username =generateUsername(createRequest.getFirstName(),createRequest.getLastName());
+			String password =generatePassword();
+			createRequest.setUsername(username);
+			createRequest.setPassword(password);
 			userRepository.save(createRequest);
 			return createRequest;
 		}
@@ -63,8 +69,29 @@ return updateRequest;
 		  userRepository.deleteById(id);
 	}
 
-//	public User readByUserName(String usernname) {
-//		return userDAO.readByUsername(usernname);
-//	}
+	private String generateUsername(String firstName, String lastName) {
+		String username = firstName + "." + lastName;
+		List<User> users = readAll();
+
+		for (User user : users) {
+			if (user.getUsername().equals(username)) {
+				username += user.getId()+1;
+				return username;
+			}
+		}
+		return username;
+
+	}
+
+	private String generatePassword() {
+
+		String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder password = new StringBuilder();
+		Random random = new Random();
+		for (int i = 1; i <= 10; i++) {
+			password.append(characters.charAt(random.nextInt(characters.length())));
+		}
+		return password.toString();
+	}
 
 }

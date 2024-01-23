@@ -98,13 +98,14 @@ public class TraineeController {
 		if (!user.getPassword().equals(password)) {
 			throw new RuntimeException("wrong password");
 		}
-		if (updateTraineeDTO.getActive() == null || updateTraineeDTO.getFirstname() == null
+
+		if ( updateTraineeDTO.getFirstname() == null
 				|| updateTraineeDTO.getLastname() == null || updateTraineeDTO.getUsername() == null) {
 			throw new RuntimeException("required fields are empty");
 		}
 
 		User user1 = userService.readByUsername(updateTraineeDTO.getUsername());
-		user1.setActive(updateTraineeDTO.getActive());
+		user1.setActive(Boolean.valueOf(updateTraineeDTO.getActive()));
 		user1.setLastName(updateTraineeDTO.getLastname());
 		user1.setFirstName(updateTraineeDTO.getFirstname());
 		userService.update(user1);

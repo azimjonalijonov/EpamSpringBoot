@@ -12,6 +12,16 @@ public class PostTraineeDTO {
 
 	private String address;
 
+	public Boolean getActive() {
+		return isActive;
+	}
+
+	public void setActive(Boolean active) {
+		isActive = active;
+	}
+
+	private Boolean isActive;
+
 	public String getFirstname() {
 		return firstname;
 	}

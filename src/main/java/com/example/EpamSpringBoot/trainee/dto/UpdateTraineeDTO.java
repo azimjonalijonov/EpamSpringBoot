@@ -21,7 +21,7 @@ public class UpdateTraineeDTO {
 				+ isActive + '}';
 	}
 
-	private Boolean isActive;
+	private String isActive;
 
 	public String getUsername() {
 		return username;
@@ -63,11 +63,11 @@ public class UpdateTraineeDTO {
 		this.address = address;
 	}
 
-	public Boolean getActive() {
+	public String getActive() {
 		return isActive;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(String active) {
 		isActive = active;
 	}
 

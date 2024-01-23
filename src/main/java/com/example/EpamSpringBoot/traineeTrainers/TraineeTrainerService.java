@@ -5,14 +5,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TraineeTrainerService {
 
-	private final TraineeTrainerDAO traineeTrainerDAO;
+	private final TraineeTrainersRepository traineeTrainersRepository;
 
-	public TraineeTrainerService(TraineeTrainerDAO traineeTrainerDAO) {
-		this.traineeTrainerDAO = traineeTrainerDAO;
+	public TraineeTrainerService(TraineeTrainersRepository traineeTrainersRepository) {
+		this.traineeTrainersRepository = traineeTrainersRepository;
 	}
 
+
 	public TraineeTrainer add(TraineeTrainer traineeTrainer) {
-		return traineeTrainerDAO.createOrUpdate(traineeTrainer);
+		return traineeTrainersRepository.save(traineeTrainer);
 	}
 
 }
