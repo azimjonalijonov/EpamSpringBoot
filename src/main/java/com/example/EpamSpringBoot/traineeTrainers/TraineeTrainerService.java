@@ -11,7 +11,6 @@ public class TraineeTrainerService {
 		this.traineeTrainersRepository = traineeTrainersRepository;
 	}
 
-
 	public TraineeTrainer add(TraineeTrainer traineeTrainer) {
 		return traineeTrainersRepository.save(traineeTrainer);
 	}

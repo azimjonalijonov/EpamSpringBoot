@@ -1,6 +1,5 @@
 package com.example.EpamSpringBoot.trainer;
 
-
 import com.example.EpamSpringBoot.trainee.Trainee;
 import com.example.EpamSpringBoot.trainee.TraineeService;
 import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainer;
@@ -10,7 +9,7 @@ import com.example.EpamSpringBoot.trainingType.TrainingType;
 import com.example.EpamSpringBoot.trainingType.TrainingTypeService;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
- import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,7 +43,6 @@ public class TrainerController {
 		this.trainingTypeService = trainingTypeService;
 	}
 
-
 	@PostMapping("/post")
 	public ResponseEntity post(@RequestBody PostTrainerDTO postTrainerDTO) {
 		if (postTrainerDTO.getFirstname().equals(null) || postTrainerDTO.getLastname().equals(null)
@@ -55,7 +53,7 @@ public class TrainerController {
 		user.setFirstName(postTrainerDTO.getFirstname());
 		user.setLastName(postTrainerDTO.getLastname());
 		User user1 = userService.create(user);
-		Long val =postTrainerDTO.getTrainingTypeDTO().getId();
+		Long val = postTrainerDTO.getTrainingTypeDTO().getId();
 		TrainingType trainingType = trainingTypeService.readById(val);
 		Trainer trainer = new Trainer();
 		trainer.setSpecialization(trainingType);
@@ -67,7 +65,6 @@ public class TrainerController {
 		return ResponseEntity.ok(response);
 
 	}
-
 
 	@GetMapping("/get")
 	public ResponseEntity get(@RequestParam String username, String password) {
@@ -81,7 +78,6 @@ public class TrainerController {
 		String response = trainerService.readByUsername(username).toString();
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-
 
 	@PutMapping("/update")
 	public ResponseEntity update(@RequestParam String username, String password,
@@ -107,7 +103,6 @@ public class TrainerController {
 		return ResponseEntity.ok(response);
 	}
 
-
 	@GetMapping("/getspecial")
 	public ResponseEntity getSpecial(@RequestParam String username, String password) {
 		if (userService.readByUsername(username) == null) {
@@ -121,7 +116,7 @@ public class TrainerController {
 		return ResponseEntity.ok(trainerList);
 	}
 
- 	@PatchMapping("/activateDeacivate")
+	@PatchMapping("/activateDeacivate")
 	public ResponseEntity changeStatus(@RequestParam String username, String password, Boolean bool) {
 		if (userService.readByUsername(username) == null) {
 			throw new RuntimeException("user does not exist");

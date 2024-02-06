@@ -39,7 +39,6 @@ public class TrainingController {
 		this.trainerTraineeService = trainerTraineeService;
 	}
 
-
 	@PostMapping("/post")
 	public ResponseEntity post(@RequestParam String username, String password,
 			@RequestBody PostTrainingDTO postTraining) {

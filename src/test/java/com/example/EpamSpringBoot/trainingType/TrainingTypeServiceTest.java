@@ -1,4 +1,5 @@
 package com.example.EpamSpringBoot.trainingType;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -11,73 +12,74 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
- import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class TrainingTypeServiceTest {
 
-    @Mock
-    private TrainingTypeRepository trainingTypeRepository;
+	@Mock
+	private TrainingTypeRepository trainingTypeRepository;
 
-    @Mock
-    private TrainingTypeErrorValidator trainingTypeErrorValidator;
+	@Mock
+	private TrainingTypeErrorValidator trainingTypeErrorValidator;
 
-    @InjectMocks
-    private TrainingTypeService trainingTypeService;
+	@InjectMocks
+	private TrainingTypeService trainingTypeService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+	@BeforeEach
+	void setUp() {
+		MockitoAnnotations.openMocks(this);
+	}
 
-    @Test
-    void readAll_shouldReturnListOfTrainingTypes() {
-         List<TrainingType> expectedTrainingTypes = new ArrayList<>();
-        when(trainingTypeRepository.findAll()).thenReturn(expectedTrainingTypes);
+	@Test
+	void readAll_shouldReturnListOfTrainingTypes() {
+		List<TrainingType> expectedTrainingTypes = new ArrayList<>();
+		when(trainingTypeRepository.findAll()).thenReturn(expectedTrainingTypes);
 
-         List<TrainingType> trainingTypes = trainingTypeService.readAll();
+		List<TrainingType> trainingTypes = trainingTypeService.readAll();
 
-         assertNotNull(trainingTypes);
-        assertEquals(expectedTrainingTypes, trainingTypes);
-    }
+		assertNotNull(trainingTypes);
+		assertEquals(expectedTrainingTypes, trainingTypes);
+	}
 
-    @Test
-    void readById_shouldReturnTrainingType_whenTrainingTypeExists() {
-         long trainingTypeId = 1L;
-        TrainingType expectedTrainingType = new TrainingType();
-        when(trainingTypeRepository.findById(trainingTypeId)).thenReturn(Optional.of(expectedTrainingType));
+	@Test
+	void readById_shouldReturnTrainingType_whenTrainingTypeExists() {
+		long trainingTypeId = 1L;
+		TrainingType expectedTrainingType = new TrainingType();
+		when(trainingTypeRepository.findById(trainingTypeId)).thenReturn(Optional.of(expectedTrainingType));
 
-         TrainingType trainingType = trainingTypeService.readById(trainingTypeId);
+		TrainingType trainingType = trainingTypeService.readById(trainingTypeId);
 
-         assertNotNull(trainingType);
-        assertEquals(expectedTrainingType, trainingType);
-    }
+		assertNotNull(trainingType);
+		assertEquals(expectedTrainingType, trainingType);
+	}
 
-    @Test
-    void readById_shouldThrowException_whenTrainingTypeDoesNotExist() {
-         long nonExistingTrainingTypeId = 999L;
-        when(trainingTypeRepository.findById(nonExistingTrainingTypeId)).thenReturn(Optional.empty());
+	@Test
+	void readById_shouldThrowException_whenTrainingTypeDoesNotExist() {
+		long nonExistingTrainingTypeId = 999L;
+		when(trainingTypeRepository.findById(nonExistingTrainingTypeId)).thenReturn(Optional.empty());
 
-         assertThrows(EntityNotFoundException.class, () -> trainingTypeService.readById(nonExistingTrainingTypeId));
-    }
+		assertThrows(EntityNotFoundException.class, () -> trainingTypeService.readById(nonExistingTrainingTypeId));
+	}
 
-    @Test
-    void add_shouldReturnTrainingType_whenParamsAreValid() {
-         TrainingType trainingType = new TrainingType();
-        when(trainingTypeErrorValidator.isValidParamsForCreate(trainingType)).thenReturn(true);
-        when(trainingTypeRepository.save(trainingType)).thenReturn(trainingType);
+	@Test
+	void add_shouldReturnTrainingType_whenParamsAreValid() {
+		TrainingType trainingType = new TrainingType();
+		when(trainingTypeErrorValidator.isValidParamsForCreate(trainingType)).thenReturn(true);
+		when(trainingTypeRepository.save(trainingType)).thenReturn(trainingType);
 
-         TrainingType addedTrainingType = trainingTypeService.add(trainingType);
+		TrainingType addedTrainingType = trainingTypeService.add(trainingType);
 
-         assertNotNull(addedTrainingType);
-        assertEquals(trainingType, addedTrainingType);
-    }
+		assertNotNull(addedTrainingType);
+		assertEquals(trainingType, addedTrainingType);
+	}
 
-    @Test
-    void add_shouldThrowException_whenParamsAreInvalid() {
-         TrainingType trainingType = new TrainingType();
-        when(trainingTypeErrorValidator.isValidParamsForCreate(trainingType)).thenReturn(false);
-         assertThrows(ValidatorException.class, () -> trainingTypeService.add(trainingType));
-    }
+	@Test
+	void add_shouldThrowException_whenParamsAreInvalid() {
+		TrainingType trainingType = new TrainingType();
+		when(trainingTypeErrorValidator.isValidParamsForCreate(trainingType)).thenReturn(false);
+		assertThrows(ValidatorException.class, () -> trainingTypeService.add(trainingType));
+	}
+
 }

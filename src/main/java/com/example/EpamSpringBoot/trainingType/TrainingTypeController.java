@@ -3,7 +3,7 @@ package com.example.EpamSpringBoot.trainingType;
 import com.example.EpamSpringBoot.trainingType.dto.TrainingTypeDTO;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
- import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,13 +19,13 @@ import java.util.List;
 public class TrainingTypeController {
 
 	final TrainingTypeService trainingTypeService;
+
 	private final UserService userService;
 
 	public TrainingTypeController(TrainingTypeService trainingTypeService, UserService userService) {
 		this.trainingTypeService = trainingTypeService;
 		this.userService = userService;
 	}
-
 
 	@GetMapping("/get")
 	public ResponseEntity get() {
@@ -35,7 +35,8 @@ public class TrainingTypeController {
 	}
 
 	@PostMapping("/post")
-	public ResponseEntity post(@RequestParam String username, String password, @RequestBody TrainingTypeDTO trainingTypeDTO){
+	public ResponseEntity post(@RequestParam String username, String password,
+			@RequestBody TrainingTypeDTO trainingTypeDTO) {
 
 		if (userService.readByUsername(username) == null) {
 			throw new RuntimeException("user does not exist");
@@ -44,10 +45,10 @@ public class TrainingTypeController {
 		if (!user.getPassword().equals(password)) {
 			throw new RuntimeException("wrong password");
 		}
-		if(trainingTypeDTO.getName()==null){
+		if (trainingTypeDTO.getName() == null) {
 			throw new RuntimeException("name must be placed");
 		}
-		TrainingType trainingType =new TrainingType();
+		TrainingType trainingType = new TrainingType();
 		trainingType.setName(trainingTypeDTO.getName());
 		trainingTypeService.add(trainingType);
 		return new ResponseEntity<>(HttpStatus.OK);

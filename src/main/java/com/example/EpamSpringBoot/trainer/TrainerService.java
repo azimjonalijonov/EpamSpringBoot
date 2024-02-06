@@ -1,6 +1,5 @@
 package com.example.EpamSpringBoot.trainer;
 
-
 import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainer;
 import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainersRepository;
 import com.example.EpamSpringBoot.user.User;
@@ -15,92 +14,96 @@ import java.util.List;
 @Service
 public class TrainerService {
 
-    private final TrainerErrorValidator trainerErrorValidator;
-    private final TrainerRepository trainerRepository;
-    private final UserService userService;
-    private final TraineeTrainersRepository traineeTrainersRepository;
+	private final TrainerErrorValidator trainerErrorValidator;
 
-    public TrainerService(TrainerErrorValidator trainerErrorValidator, TrainerRepository trainerRepository, UserService userService, TraineeTrainersRepository traineeTrainersRepository) {
-        this.trainerErrorValidator = trainerErrorValidator;
-        this.trainerRepository = trainerRepository;
-        this.userService = userService;
-        this.traineeTrainersRepository = traineeTrainersRepository;
-    }
+	private final TrainerRepository trainerRepository;
 
+	private final UserService userService;
 
-    public List<Trainer> readAll() {
-        return trainerRepository.findAll();
-    }
+	private final TraineeTrainersRepository traineeTrainersRepository;
 
-    public Trainer readById(Long id) {
-        return (trainerRepository.findById(id)).orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
-    }
+	public TrainerService(TrainerErrorValidator trainerErrorValidator, TrainerRepository trainerRepository,
+			UserService userService, TraineeTrainersRepository traineeTrainersRepository) {
+		this.trainerErrorValidator = trainerErrorValidator;
+		this.trainerRepository = trainerRepository;
+		this.userService = userService;
+		this.traineeTrainersRepository = traineeTrainersRepository;
+	}
 
-    public Trainer create(Trainer createRequest) {
-        if (trainerErrorValidator.isValidParamsForCreate(createRequest)) {
-            return trainerRepository.save(createRequest);
-        }
-        throw new RuntimeException("Some thing wrong validator");
-    }
+	public List<Trainer> readAll() {
+		return trainerRepository.findAll();
+	}
 
+	public Trainer readById(Long id) {
+		return (trainerRepository.findById(id))
+			.orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
+	}
 
-    public Trainer update(Trainer updateRequest) {
-        if (trainerErrorValidator.isValidParamsForUpdate(updateRequest)) {
-            Trainer trainer = (trainerRepository.findById(updateRequest.getId())).orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + updateRequest.getId()));
+	public Trainer create(Trainer createRequest) {
+		if (trainerErrorValidator.isValidParamsForCreate(createRequest)) {
+			return trainerRepository.save(createRequest);
+		}
+		throw new RuntimeException("Some thing wrong validator");
+	}
 
-            if (trainer == null) {
+	public Trainer update(Trainer updateRequest) {
+		if (trainerErrorValidator.isValidParamsForUpdate(updateRequest)) {
+			Trainer trainer = (trainerRepository.findById(updateRequest.getId())).orElseThrow(
+					() -> new EntityNotFoundException("trainer is not found with this id : " + updateRequest.getId()));
 
-                throw new RuntimeException("null pointer exception");
-            }
+			if (trainer == null) {
 
-            return trainerRepository.save(updateRequest);
-        }
-        throw new ValidatorException("SOme thing wrong with provided entity");
-    }
+				throw new RuntimeException("null pointer exception");
+			}
 
-    public void deleteById(Long id) {
-        trainerRepository.deleteById(id);
-    }
+			return trainerRepository.save(updateRequest);
+		}
+		throw new ValidatorException("SOme thing wrong with provided entity");
+	}
 
-    public Trainer readByUsername(String username) {
-        User user = userService.readByUsername(username);
-        Trainer trainer = trainerRepository.findTrainerByUser(user);
-        return trainer;
+	public void deleteById(Long id) {
+		trainerRepository.deleteById(id);
+	}
 
-    }
+	public Trainer readByUsername(String username) {
+		User user = userService.readByUsername(username);
+		Trainer trainer = trainerRepository.findTrainerByUser(user);
+		return trainer;
 
-    public String passwordChangeTrainer(String password, Long id) {
-        Trainer trainer = trainerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
-        ;
-        User user = trainer.getUser();
-        user.setPassword(password);
-        userService.update(user);
-        return password;
+	}
 
-    }
+	public String passwordChangeTrainer(String password, Long id) {
+		Trainer trainer = trainerRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
+		;
+		User user = trainer.getUser();
+		user.setPassword(password);
+		userService.update(user);
+		return password;
 
-    public String changeActivation(Boolean bool, Long id) {
-        Trainer trainer = trainerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
-        ;
-        User user = trainer.getUser();
-        user.setActive(bool);
-        userService.update(user);
-        return "activated to " + bool;
-    }
+	}
 
-    public List<Trainer> getSpecificTrainers() {
+	public String changeActivation(Boolean bool, Long id) {
+		Trainer trainer = trainerRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("trainer is not found with this id : " + id));
+		;
+		User user = trainer.getUser();
+		user.setActive(bool);
+		userService.update(user);
+		return "activated to " + bool;
+	}
 
-        return trainerRepository.findActiveTrainersWithoutTrainees();
-    }
+	public List<Trainer> getSpecificTrainers() {
 
+		return trainerRepository.findActiveTrainersWithoutTrainees();
+	}
 
+	public List<TraineeTrainer> getTraineeTrainingList(String username, Number duration) {
+		User user = userService.readByUsername(username);
+		Trainer trainer = trainerRepository.findTrainerByUser(user);
+		List<TraineeTrainer> trainings = (List<TraineeTrainer>) traineeTrainersRepository.findAllByTrainer(trainer);
+		return trainings;
 
-    public List<TraineeTrainer> getTraineeTrainingList(String username, Number duration) {
-        User user = userService.readByUsername(username);
-        Trainer trainer = trainerRepository.findTrainerByUser(user);
-        List<TraineeTrainer> trainings = (List<TraineeTrainer>) traineeTrainersRepository.findAllByTrainer(trainer);
-        return trainings ;
-
-    }
+	}
 
 }

@@ -1,5 +1,6 @@
 package com.example.EpamSpringBoot.trainee;
- import com.example.EpamSpringBoot.trainee.dto.PostTraineeDTO;
+
+import com.example.EpamSpringBoot.trainee.dto.PostTraineeDTO;
 import com.example.EpamSpringBoot.trainee.dto.UpdateTraineeDTO;
 import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainer;
 import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainerService;
@@ -45,7 +46,7 @@ public class TraineeController {
 		this.trainerTraineeService = trainerTraineeService;
 	}
 
- 	@PostMapping("/post")
+	@PostMapping("/post")
 	public ResponseEntity post(@RequestBody PostTraineeDTO traineeDTO) {
 
 		if (traineeDTO.getFirstname().equals(null) || traineeDTO.getLastname().equals(null)) {
@@ -66,7 +67,7 @@ public class TraineeController {
 		return ResponseEntity.ok(response);
 	}
 
- 	@GetMapping("/get")
+	@GetMapping("/get")
 	public ResponseEntity get(@RequestParam String username, String password) {
 		if (userService.readByUsername(username) == null) {
 			throw new RuntimeException("user does not exist");
@@ -79,7 +80,6 @@ public class TraineeController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-
 	@PutMapping("/update")
 	public ResponseEntity update(@RequestParam String username, String password,
 			@RequestBody UpdateTraineeDTO updateTraineeDTO) {
@@ -91,8 +91,8 @@ public class TraineeController {
 			throw new RuntimeException("wrong password");
 		}
 
-		if ( updateTraineeDTO.getFirstname() == null
-				|| updateTraineeDTO.getLastname() == null || updateTraineeDTO.getUsername() == null) {
+		if (updateTraineeDTO.getFirstname() == null || updateTraineeDTO.getLastname() == null
+				|| updateTraineeDTO.getUsername() == null) {
 			throw new RuntimeException("required fields are empty");
 		}
 
@@ -119,7 +119,6 @@ public class TraineeController {
 		return ResponseEntity.ok(response);
 	}
 
-
 	@DeleteMapping("/delete")
 	public ResponseEntity delete(@RequestParam String username, String password) {
 		if (userService.readByUsername(username) == null) {
@@ -132,7 +131,6 @@ public class TraineeController {
 		traineeService.deleteByUsername(username);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
 
 	@PutMapping("/updateTrainerList")
 	public ResponseEntity updateTrainerList(@RequestParam String username, String password,
@@ -158,7 +156,7 @@ public class TraineeController {
 
 	}
 
- 	@GetMapping("/getTraineeTrainings")
+	@GetMapping("/getTraineeTrainings")
 
 	public ResponseEntity getTraineeTrainings(@RequestParam String username, String password, LocalDate from,
 			LocalDate to, String trainerName, Long trainingTypeId) {
@@ -174,7 +172,6 @@ public class TraineeController {
 
 		return ResponseEntity.ok(trainings);
 	}
-
 
 	@PatchMapping("/activateDeacivate")
 	public ResponseEntity changeStatus(@RequestParam String username, String password, Boolean bool) {

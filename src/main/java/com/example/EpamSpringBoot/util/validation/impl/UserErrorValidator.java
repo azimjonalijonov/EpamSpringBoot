@@ -1,6 +1,5 @@
 package com.example.EpamSpringBoot.util.validation.impl;
 
-
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.util.exception.ValidatorException;
 import com.example.EpamSpringBoot.util.validation.Validator;

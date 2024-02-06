@@ -17,48 +17,48 @@ import java.util.Optional;
 
 public class TrainingServiceTest {
 
-    @Mock
-    private TrainingRepository trainingRepository;
+	@Mock
+	private TrainingRepository trainingRepository;
 
-    @Mock
-    private TrainingErrorValidator trainingErrorValidator;
+	@Mock
+	private TrainingErrorValidator trainingErrorValidator;
 
-    @InjectMocks
-    private TrainingService trainingService;
+	@InjectMocks
+	private TrainingService trainingService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+	@BeforeEach
+	void setUp() {
+		MockitoAnnotations.openMocks(this);
+	}
 
-    @Test
-    void readAll_shouldReturnListOfTrainings() {
-        List<Training> expectedTrainings = new ArrayList<>();
-        when(trainingRepository.findAll()).thenReturn(expectedTrainings);
+	@Test
+	void readAll_shouldReturnListOfTrainings() {
+		List<Training> expectedTrainings = new ArrayList<>();
+		when(trainingRepository.findAll()).thenReturn(expectedTrainings);
 
-        List<Training> trainings = trainingService.readAll();
-        assertNotNull(trainings);
-        assertEquals(expectedTrainings, trainings);
-    }
+		List<Training> trainings = trainingService.readAll();
+		assertNotNull(trainings);
+		assertEquals(expectedTrainings, trainings);
+	}
 
-    @Test
-    void readById_shouldReturnTraining_whenTrainingExists() {
-         long trainingId = 1L;
-        Training expectedTraining = new Training();
-        when(trainingRepository.findById(trainingId)).thenReturn(Optional.of(expectedTraining));
+	@Test
+	void readById_shouldReturnTraining_whenTrainingExists() {
+		long trainingId = 1L;
+		Training expectedTraining = new Training();
+		when(trainingRepository.findById(trainingId)).thenReturn(Optional.of(expectedTraining));
 
-         Training training = trainingService.readById(trainingId);
+		Training training = trainingService.readById(trainingId);
 
-         assertNotNull(training);
-        assertEquals(expectedTraining, training);
-    }
+		assertNotNull(training);
+		assertEquals(expectedTraining, training);
+	}
 
-    @Test
-    void readById_shouldThrowException_whenTrainingDoesNotExist() {
-         long nonExistingTrainingId = 999L;
-        when(trainingRepository.findById(nonExistingTrainingId)).thenReturn(Optional.empty());
+	@Test
+	void readById_shouldThrowException_whenTrainingDoesNotExist() {
+		long nonExistingTrainingId = 999L;
+		when(trainingRepository.findById(nonExistingTrainingId)).thenReturn(Optional.empty());
 
-         assertThrows(EntityNotFoundException.class, () -> trainingService.readById(nonExistingTrainingId));
-    }
+		assertThrows(EntityNotFoundException.class, () -> trainingService.readById(nonExistingTrainingId));
+	}
 
 }

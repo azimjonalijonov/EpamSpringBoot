@@ -8,12 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TraineeRepository  extends JpaRepository<Trainee,Long> {
-    Trainee findTraineeByUser(User user);
-    @Modifying
-    @Query("DELETE FROM Trainee t WHERE t.user.id = :userId")
-    void deleteByUserId(@Param("userId") Long userId);
+public interface TraineeRepository extends JpaRepository<Trainee, Long> {
 
-    void deleteByUser(User user);
+	Trainee findTraineeByUser(User user);
+
+	@Modifying
+	@Query("DELETE FROM Trainee t WHERE t.user.id = :userId")
+	void deleteByUserId(@Param("userId") Long userId);
+
+	void deleteByUser(User user);
 
 }

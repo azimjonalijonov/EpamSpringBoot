@@ -23,44 +23,45 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainingTypeControllerTest {
 
-    @Mock
-    private TrainingTypeService trainingTypeService;
+	@Mock
+	private TrainingTypeService trainingTypeService;
 
-    @Mock
-    private UserService userService;
+	@Mock
+	private UserService userService;
 
-    @InjectMocks
-    private TrainingTypeController trainingTypeController;
+	@InjectMocks
+	private TrainingTypeController trainingTypeController;
 
-    @Test
-    void get_shouldReturnTrainingTypes() {
-         List<TrainingType> trainingTypes = new ArrayList<>();
-        TrainingType trainingType1 = new TrainingType();
-        TrainingType trainingType2 = new TrainingType();
-        trainingTypes.add(trainingType1);
-        trainingTypes.add(trainingType2);
+	@Test
+	void get_shouldReturnTrainingTypes() {
+		List<TrainingType> trainingTypes = new ArrayList<>();
+		TrainingType trainingType1 = new TrainingType();
+		TrainingType trainingType2 = new TrainingType();
+		trainingTypes.add(trainingType1);
+		trainingTypes.add(trainingType2);
 
-        when(trainingTypeService.readAll()).thenReturn(trainingTypes);
+		when(trainingTypeService.readAll()).thenReturn(trainingTypes);
 
-        ResponseEntity responseEntity = trainingTypeController.get();
+		ResponseEntity responseEntity = trainingTypeController.get();
 
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(trainingTypes, responseEntity.getBody());
-    }
+		assertNotNull(responseEntity);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(trainingTypes, responseEntity.getBody());
+	}
 
-    @Test
-    void post_shouldCreateTrainingTypeAndReturnResponseEntity() {
-        String username = "Azimjon";
-        String password = "password";
-        TrainingTypeDTO trainingTypeDTO = new TrainingTypeDTO();
-        trainingTypeDTO.setName("Training Type Name");
-        User mockUser = new User();
-        mockUser.setPassword(password);
-        when(userService.readByUsername(username)).thenReturn(mockUser);
-        ResponseEntity responseEntity = trainingTypeController.post(username, password, trainingTypeDTO);
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(trainingTypeService, times(1)).add(any(TrainingType.class));
-    }
+	@Test
+	void post_shouldCreateTrainingTypeAndReturnResponseEntity() {
+		String username = "Azimjon";
+		String password = "password";
+		TrainingTypeDTO trainingTypeDTO = new TrainingTypeDTO();
+		trainingTypeDTO.setName("Training Type Name");
+		User mockUser = new User();
+		mockUser.setPassword(password);
+		when(userService.readByUsername(username)).thenReturn(mockUser);
+		ResponseEntity responseEntity = trainingTypeController.post(username, password, trainingTypeDTO);
+		assertNotNull(responseEntity);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		verify(trainingTypeService, times(1)).add(any(TrainingType.class));
+	}
+
 }

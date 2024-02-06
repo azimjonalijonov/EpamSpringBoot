@@ -1,19 +1,19 @@
 package com.example.EpamSpringBoot.training;
 
-
 import com.example.EpamSpringBoot.util.validation.impl.TrainingErrorValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
-public class TrainingService  {
+public class TrainingService {
 
 	private final TrainingRepository trainingRepository;
 
 	private final TrainingErrorValidator trainingErrorValidator;
 
-	public TrainingService( TrainingRepository trainingRepository, TrainingErrorValidator trainingErrorValidator) {
+	public TrainingService(TrainingRepository trainingRepository, TrainingErrorValidator trainingErrorValidator) {
 		this.trainingRepository = trainingRepository;
 		this.trainingErrorValidator = trainingErrorValidator;
 	}
@@ -23,7 +23,8 @@ public class TrainingService  {
 	}
 
 	public Training readById(Long id) {
-		return trainingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("training is not found with this id : " + id));
+		return trainingRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("training is not found with this id : " + id));
 	}
 
 	public Training create(Training createRequest) {
@@ -45,9 +46,9 @@ public class TrainingService  {
 		trainingRepository.deleteById(id);
 	}
 
-//	public Training addTraining(Training training) {
-//		return trainingDAO.createOrUpdate(training);
-//
-//	}
+	// public Training addTraining(Training training) {
+	// return trainingDAO.createOrUpdate(training);
+	//
+	// }
 
 }

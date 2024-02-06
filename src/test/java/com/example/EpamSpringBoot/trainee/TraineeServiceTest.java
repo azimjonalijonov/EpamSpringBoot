@@ -9,7 +9,7 @@ import com.example.EpamSpringBoot.util.validation.impl.TraineeErrorValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
- import org.mockito.InjectMocks;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -21,29 +21,29 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 class TraineeServiceTest {
 
-    @Mock
-    TraineeRepository traineeRepository;
+	@Mock
+	TraineeRepository traineeRepository;
 
-    @Mock
-    private UserService userService;
-    @Mock
-    TrainingRepository trainingRepository;
+	@Mock
+	private UserService userService;
 
-    @Mock
-    private TraineeErrorValidator traineeErrorValidator;
+	@Mock
+	TrainingRepository trainingRepository;
 
-    @InjectMocks
-    private TraineeService traineeService;
+	@Mock
+	private TraineeErrorValidator traineeErrorValidator;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+	@InjectMocks
+	private TraineeService traineeService;
 
-    @Test
+	@BeforeEach
+	void setUp() {
+		MockitoAnnotations.openMocks(this);
+	}
+
+	@Test
     void readAll_shouldReturnListOfTrainees() {
         when(traineeRepository.findAll()).thenReturn(Collections.singletonList(new Trainee()));
 
@@ -52,81 +52,79 @@ class TraineeServiceTest {
         assertEquals(1, trainees.size());
     }
 
-    @Test
-    void readById_existingId_shouldReturnTrainee() {
-        Long traineeId = 1L;
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(new Trainee()));
+	@Test
+	void readById_existingId_shouldReturnTrainee() {
+		Long traineeId = 1L;
+		when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(new Trainee()));
 
-        Trainee trainee = traineeService.readById(traineeId);
+		Trainee trainee = traineeService.readById(traineeId);
 
-        assertNotNull(trainee);
-    }
+		assertNotNull(trainee);
+	}
 
-    @Test
-    void readById_nonExistingId_shouldThrowEntityNotFoundException() {
-        Long traineeId = 1L;
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.empty());
+	@Test
+	void readById_nonExistingId_shouldThrowEntityNotFoundException() {
+		Long traineeId = 1L;
+		when(traineeRepository.findById(traineeId)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> traineeService.readById(traineeId));
-    }
+		assertThrows(EntityNotFoundException.class, () -> traineeService.readById(traineeId));
+	}
 
+	@Test
+	void deleteById_shouldCallRepositoryDeleteById() {
+		Long traineeId = 1L;
 
-    @Test
-    void deleteById_shouldCallRepositoryDeleteById() {
-        Long traineeId = 1L;
+		traineeService.deleteById(traineeId);
 
-        traineeService.deleteById(traineeId);
+		verify(traineeRepository, times(1)).deleteById(traineeId);
+	}
 
-        verify(traineeRepository, times(1)).deleteById(traineeId);
-    }
+	@Test
+	void create_validTrainee_shouldReturnCreatedTrainee() {
+		Trainee traineeToCreate = new Trainee();
+		when(traineeErrorValidator.isValidParamsForCreate(traineeToCreate)).thenReturn(true);
 
-    @Test
-    void create_validTrainee_shouldReturnCreatedTrainee() {
-        Trainee traineeToCreate = new Trainee();
-        when(traineeErrorValidator.isValidParamsForCreate(traineeToCreate)).thenReturn(true);
+		Trainee createdTrainee = traineeService.create(traineeToCreate);
 
-        Trainee createdTrainee = traineeService.create(traineeToCreate);
+		assertNotNull(createdTrainee);
+		verify(traineeRepository, times(1)).save(traineeToCreate);
+	}
 
-        assertNotNull(createdTrainee);
-        verify(traineeRepository, times(1)).save(traineeToCreate);
-    }
+	@Test
+	void update_validTrainee_shouldReturnUpdatedTrainee() {
+		Trainee traineeToUpdate = new Trainee();
+		when(traineeErrorValidator.isValidParamsForUpdate(traineeToUpdate)).thenReturn(true);
+		when(traineeRepository.findById(traineeToUpdate.getId())).thenReturn(Optional.of(new Trainee()));
 
+		Trainee updatedTrainee = traineeService.update(traineeToUpdate);
 
-    @Test
-    void update_validTrainee_shouldReturnUpdatedTrainee() {
-        Trainee traineeToUpdate = new Trainee();
-        when(traineeErrorValidator.isValidParamsForUpdate(traineeToUpdate)).thenReturn(true);
-        when(traineeRepository.findById(traineeToUpdate.getId())).thenReturn(Optional.of(new Trainee()));
+		assertNotNull(updatedTrainee);
+		verify(traineeRepository, times(1)).save(any(Trainee.class));
+	}
 
-        Trainee updatedTrainee = traineeService.update(traineeToUpdate);
+	@Test
+	void update_invalidTrainee_shouldThrowValidatorException() {
+		Trainee traineeToUpdate = new Trainee();
+		when(traineeErrorValidator.isValidParamsForUpdate(traineeToUpdate)).thenReturn(false);
 
-        assertNotNull(updatedTrainee);
-        verify(traineeRepository, times(1)).save(any(Trainee.class));
-    }
+		assertThrows(ValidatorException.class, () -> traineeService.update(traineeToUpdate));
+		verify(traineeRepository, never()).save(any(Trainee.class));
+	}
 
-    @Test
-    void update_invalidTrainee_shouldThrowValidatorException() {
-        Trainee traineeToUpdate = new Trainee();
-        when(traineeErrorValidator.isValidParamsForUpdate(traineeToUpdate)).thenReturn(false);
+	@Test
+	void getTraineeTrainingList_shouldReturnTrainings() {
+		String username = "testUser";
+		User user = new User();
+		Trainee trainee = new Trainee();
+		when(userService.readByUsername(username)).thenReturn(user);
+		when(traineeRepository.findTraineeByUser(user)).thenReturn(trainee);
+		List<Training> expectedTrainings = new ArrayList<>();
+		when(trainingRepository.findAllByTrainee(trainee)).thenReturn(expectedTrainings);
 
-        assertThrows(ValidatorException.class, () -> traineeService.update(traineeToUpdate));
-        verify(traineeRepository, never()).save(any(Trainee.class));
-    }
+		List<Training> trainings = traineeService.getTraineeTrainingList(username, 5);
 
+		assertNotNull(trainings);
+		assertEquals(expectedTrainings, trainings);
+	}
 
-    @Test
-    void getTraineeTrainingList_shouldReturnTrainings() {
-        String username = "testUser";
-        User user = new User();
-        Trainee trainee = new Trainee();
-        when(userService.readByUsername(username)).thenReturn(user);
-        when(traineeRepository.findTraineeByUser(user)).thenReturn(trainee);
-        List<Training> expectedTrainings = new ArrayList<>();
-        when(trainingRepository.findAllByTrainee(trainee)).thenReturn(expectedTrainings);
-
-        List<Training> trainings = traineeService.getTraineeTrainingList(username, 5);
-
-        assertNotNull(trainings);
-        assertEquals(expectedTrainings, trainings);
-    }
 }

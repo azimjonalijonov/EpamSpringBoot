@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TraineeTrainersRepository extends JpaRepository<TraineeTrainer,Long> {
-  List<TraineeTrainer> findAllByTrainer(Trainer trainer);
+public interface TraineeTrainersRepository extends JpaRepository<TraineeTrainer, Long> {
 
+	List<TraineeTrainer> findAllByTrainer(Trainer trainer);
 
 }

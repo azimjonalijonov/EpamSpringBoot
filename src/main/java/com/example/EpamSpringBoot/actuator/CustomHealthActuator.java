@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomHealthActuator implements HealthIndicator {
-    @Override
-    public Health health() {
-        return Health.up().build();
-    }
+
+	@Override
+	public Health health() {
+		return Health.up().build();
+	}
+
 }

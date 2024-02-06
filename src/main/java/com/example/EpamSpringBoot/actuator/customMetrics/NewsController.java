@@ -12,19 +12,19 @@ import java.util.List;
 @RequestMapping("/api/actuator")
 public class NewsController {
 
-    private Counter counter;
+	private Counter counter;
 
-    public NewsController(MeterRegistry registry) {
-         this.counter = Counter.builder("news_fetch_request_total").
-                tag("version", "v1").
-                description("News Fetch Count").
-                register(registry);
-    }
+	public NewsController(MeterRegistry registry) {
+		this.counter = Counter.builder("news_fetch_request_total")
+			.tag("version", "v1")
+			.description("News Fetch Count")
+			.register(registry);
+	}
 
-    @GetMapping("/news")
-    public List getNews() {
-        counter.increment();
-        return List.of(new String("Good News!"), new String("Bad News!"));
-    }
+	@GetMapping("/news")
+	public List getNews() {
+		counter.increment();
+		return List.of(new String("Good News!"), new String("Bad News!"));
+	}
 
 }

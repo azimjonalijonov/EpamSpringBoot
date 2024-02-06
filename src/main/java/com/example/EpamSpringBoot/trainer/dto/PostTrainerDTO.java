@@ -1,6 +1,5 @@
 package com.example.EpamSpringBoot.trainer.dto;
 
-
 import com.example.EpamSpringBoot.trainingType.dto.TrainingTypeDTO;
 
 public class PostTrainerDTO {

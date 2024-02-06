@@ -12,11 +12,12 @@ import java.util.Random;
 @Service
 public class UserService {
 
-private final UserRepository userRepository;
+	private final UserRepository userRepository;
+
 	private final UserErrorValidator userErrorValidator;
 
 	@Autowired
-	public UserService( UserRepository userRepository, UserErrorValidator userErrorValidator) {
+	public UserService(UserRepository userRepository, UserErrorValidator userErrorValidator) {
 		this.userRepository = userRepository;
 		this.userErrorValidator = userErrorValidator;
 	}
@@ -28,15 +29,16 @@ private final UserRepository userRepository;
 
 	public User readById(Long id) {
 
-		User user =userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user is not found with this id : " + id));
+		User user = userRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("user is not found with this id : " + id));
 		return user;
 
 	}
 
 	public User create(User createRequest) {
 		if (userErrorValidator.isValidParamsForCreate(createRequest)) {
-			String username =generateUsername(createRequest.getFirstName(),createRequest.getLastName());
-			String password =generatePassword();
+			String username = generateUsername(createRequest.getFirstName(), createRequest.getLastName());
+			String password = generatePassword();
 			createRequest.setUsername(username);
 			createRequest.setPassword(password);
 			userRepository.save(createRequest);
@@ -47,10 +49,10 @@ private final UserRepository userRepository;
 		}
 	}
 
- 	public User update(User updateRequest) {
+	public User update(User updateRequest) {
 		if (userErrorValidator.isValidParamsForUpdate(updateRequest)) {
-userRepository.save(updateRequest);
-return updateRequest;
+			userRepository.save(updateRequest);
+			return updateRequest;
 		}
 		throw new ValidatorException("Something wrong with parameters");
 	}
@@ -65,17 +67,17 @@ return updateRequest;
 		return userRepository.findUserByUsername(username);
 	}
 
- 	public void deleteById(Long id) {
-		  userRepository.deleteById(id);
+	public void deleteById(Long id) {
+		userRepository.deleteById(id);
 	}
 
-	 public String generateUsername(String firstName, String lastName) {
+	public String generateUsername(String firstName, String lastName) {
 		String username = firstName + "." + lastName;
 		List<User> users = readAll();
 
 		for (User user : users) {
 			if (user.getUsername().equals(username)) {
-				username += user.getId()+1;
+				username += user.getId() + 1;
 				return username;
 			}
 		}

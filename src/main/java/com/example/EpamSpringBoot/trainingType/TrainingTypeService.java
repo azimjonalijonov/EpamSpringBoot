@@ -1,7 +1,5 @@
 package com.example.EpamSpringBoot.trainingType;
 
-
-
 import com.example.EpamSpringBoot.util.exception.ValidatorException;
 import com.example.EpamSpringBoot.util.validation.impl.TrainingTypeErrorValidator;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +15,8 @@ public class TrainingTypeService {
 
 	private final TrainingTypeErrorValidator trainingTypeErrorValidator;
 
-	public TrainingTypeService( TrainingTypeRepository trainingTypeRepository, TrainingTypeErrorValidator trainingTypeErrorValidator) {
+	public TrainingTypeService(TrainingTypeRepository trainingTypeRepository,
+			TrainingTypeErrorValidator trainingTypeErrorValidator) {
 		this.trainingTypeRepository = trainingTypeRepository;
 		this.trainingTypeErrorValidator = trainingTypeErrorValidator;
 	}
@@ -27,7 +26,8 @@ public class TrainingTypeService {
 	}
 
 	public TrainingType readById(Long id) {
-		return trainingTypeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("trainingType is not found with this id : " + id));
+		return trainingTypeRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("trainingType is not found with this id : " + id));
 	}
 
 	public TrainingType add(TrainingType trainingType) {

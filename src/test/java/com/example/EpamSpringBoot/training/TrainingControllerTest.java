@@ -27,47 +27,47 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainingControllerTest {
 
-    @Mock
-    private UserService userService;
+	@Mock
+	private UserService userService;
 
-    @Mock
-    private TraineeService traineeService;
+	@Mock
+	private TraineeService traineeService;
 
-    @Mock
-    private TrainingService trainingService;
+	@Mock
+	private TrainingService trainingService;
 
-    @Mock
-    private TrainerService trainerService;
+	@Mock
+	private TrainerService trainerService;
 
-    @InjectMocks
-    private TrainingController trainingController;
+	@InjectMocks
+	private TrainingController trainingController;
 
-    @Test
-    void post_shouldCreateTrainingAndReturnResponseEntity() {
-        String username = "Azimjon";
-        String password = "password";
-        PostTrainingDTO postTrainingDTO = new PostTrainingDTO();
-        postTrainingDTO.setTrainerUsername("trainerUsername");
-        postTrainingDTO.setTraineeUsername("traineeUsername");
-        postTrainingDTO.setName("Training Name");
-        postTrainingDTO.setDuration(12);
-        postTrainingDTO.setDate(LocalDate.now().atStartOfDay());
+	@Test
+	void post_shouldCreateTrainingAndReturnResponseEntity() {
+		String username = "Azimjon";
+		String password = "password";
+		PostTrainingDTO postTrainingDTO = new PostTrainingDTO();
+		postTrainingDTO.setTrainerUsername("trainerUsername");
+		postTrainingDTO.setTraineeUsername("traineeUsername");
+		postTrainingDTO.setName("Training Name");
+		postTrainingDTO.setDuration(12);
+		postTrainingDTO.setDate(LocalDate.now().atStartOfDay());
 
-        User mockUser = new User();
-        mockUser.setPassword(password);
-        when(userService.readByUsername(username)).thenReturn(mockUser);
+		User mockUser = new User();
+		mockUser.setPassword(password);
+		when(userService.readByUsername(username)).thenReturn(mockUser);
 
-        Trainee mockTrainee = new Trainee();
-        when(traineeService.readByUsername(postTrainingDTO.getTraineeUsername())).thenReturn(mockTrainee);
+		Trainee mockTrainee = new Trainee();
+		when(traineeService.readByUsername(postTrainingDTO.getTraineeUsername())).thenReturn(mockTrainee);
 
-        Trainer mockTrainer = new Trainer();
-        when(trainerService.readByUsername(postTrainingDTO.getTrainerUsername())).thenReturn(mockTrainer);
+		Trainer mockTrainer = new Trainer();
+		when(trainerService.readByUsername(postTrainingDTO.getTrainerUsername())).thenReturn(mockTrainer);
 
-        ResponseEntity responseEntity = trainingController.post(username, password, postTrainingDTO);
+		ResponseEntity responseEntity = trainingController.post(username, password, postTrainingDTO);
 
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(trainingService, times(1)).create(any(Training.class));
-    }
+		assertNotNull(responseEntity);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		verify(trainingService, times(1)).create(any(Training.class));
+	}
 
 }
