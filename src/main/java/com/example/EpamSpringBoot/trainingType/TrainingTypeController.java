@@ -3,8 +3,7 @@ package com.example.EpamSpringBoot.trainingType;
 import com.example.EpamSpringBoot.trainingType.dto.TrainingTypeDTO;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.http.HttpStatus;
+ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ public class TrainingTypeController {
 		this.userService = userService;
 	}
 
-	@ApiOperation(value = "get trainingtype", response = ResponseEntity.class)
 
 	@GetMapping("/get")
 	public ResponseEntity get() {

@@ -8,7 +8,6 @@ import com.example.EpamSpringBoot.trainer.TrainerService;
 import com.example.EpamSpringBoot.training.dto.PostTrainingDTO;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
-import io.swagger.annotations.ApiOperation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +39,6 @@ public class TrainingController {
 		this.trainerTraineeService = trainerTraineeService;
 	}
 
-	@ApiOperation(value = "post training", response = ResponseEntity.class)
 
 	@PostMapping("/post")
 	public ResponseEntity post(@RequestParam String username, String password,

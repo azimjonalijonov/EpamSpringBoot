@@ -6,7 +6,7 @@ package com.example.EpamSpringBoot;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "Your API", version = "1.0", description = "Your API description"))
+//@OpenAPIDefinition(info = @Info(title = "Your API", version = "1.0", description = "Your API description"))
 
 public class EpamSpringBootApplication {
 

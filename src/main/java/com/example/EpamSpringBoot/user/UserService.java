@@ -69,7 +69,7 @@ return updateRequest;
 		  userRepository.deleteById(id);
 	}
 
-	private String generateUsername(String firstName, String lastName) {
+	 public String generateUsername(String firstName, String lastName) {
 		String username = firstName + "." + lastName;
 		List<User> users = readAll();
 
