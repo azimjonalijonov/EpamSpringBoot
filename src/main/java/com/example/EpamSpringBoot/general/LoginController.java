@@ -31,7 +31,7 @@ public class LoginController {
 	@GetMapping("/login")
 	public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
 		if (loginDTO.getUsername().equals(null) || loginDTO.getPassword().equals(null)) {
-			throw new RuntimeException("username or password should not be null");
+			return ResponseEntity.badRequest().body("Username or password should not be null");
 		}
 		User user = null;
 		String username = loginDTO.getUsername();
@@ -43,10 +43,10 @@ public class LoginController {
 			user = trainerService.readByUsername(username).getUser();
 		}
 		else {
-			throw new RuntimeException("no user with this username");
+			return ResponseEntity.badRequest().body("no user with this username");
 		}
 		if (!user.getPassword().equals(loginDTO.getPassword())) {
-			throw new RuntimeException("password mismatch");
+			return ResponseEntity.badRequest().body("password mismatch");
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

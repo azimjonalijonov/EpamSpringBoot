@@ -77,7 +77,7 @@ public class UserService {
 
 		for (User user : users) {
 			if (user.getUsername().equals(username)) {
-				username += user.getId() + 1;
+				username += users.size() + 1;
 				return username;
 			}
 		}

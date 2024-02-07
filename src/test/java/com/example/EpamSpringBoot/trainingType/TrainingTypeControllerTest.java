@@ -1,8 +1,4 @@
 package com.example.EpamSpringBoot.trainingType;
-
-import com.example.EpamSpringBoot.trainingType.TrainingType;
-import com.example.EpamSpringBoot.trainingType.TrainingTypeController;
-import com.example.EpamSpringBoot.trainingType.TrainingTypeService;
 import com.example.EpamSpringBoot.trainingType.dto.TrainingTypeDTO;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
