@@ -39,13 +39,11 @@ public class SecurityConfiguration {
 		return new CorsFilter(source);
 	}
 
-	private static final String[] WHITE_LIST_URL = { "api/trainee/post", };
+	private static final String[] WHITE_LIST_URL = { "api/trainee/post", "api/trainer/post", "api/login" };
 
 	private final JwtAuthenticationFilter jwtAuthFilter;
 
 	private final AuthenticationProvider authenticationProvider;
-
-	// private final LogoutHandler logoutHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,18 +51,13 @@ public class SecurityConfiguration {
 			.authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
 				.permitAll()
 				.requestMatchers("/api/**")
-				.permitAll()
-				.requestMatchers(GET, "/api/**")
-				.hasAnyAuthority("ROLE_TRAINEE", "ROLE_TRAINER"))
-			//
-			// .anyRequest()
-			// .authenticated()
-			// )
+				.hasAnyRole("TRAINER", "TRAINEE")
+
+			)
+
 			.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
 			.authenticationProvider(authenticationProvider)
-			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-		//
-		;
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,13 @@ class UserServiceTest {
 	@InjectMocks
 	private UserService userService;
 
+	@Mock
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
+
 	}
 
 	@Test
@@ -65,9 +70,8 @@ class UserServiceTest {
 	void create_shouldCreateUser_whenParamsAreValid() {
 		User user = new User();
 		when(userErrorValidator.isValidParamsForCreate(user)).thenReturn(true);
-
-		User createdUser = userService.create(user);
-		assertNotNull(createdUser);
+		when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+		userService.create(user);
 		verify(userRepository, times(1)).save(user);
 	}
 

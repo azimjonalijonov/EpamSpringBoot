@@ -21,20 +21,16 @@ public class UserService {
 
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	private final JwtService jwtService;
-
 	private final AuthenticationManager authenticationManager;
 
 	public static String currentP;
 
 	@Autowired
 	public UserService(UserRepository userRepository, UserErrorValidator userErrorValidator,
-			BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService,
-			AuthenticationManager authenticationManager) {
+			BCryptPasswordEncoder bCryptPasswordEncoder, AuthenticationManager authenticationManager) {
 		this.userRepository = userRepository;
 		this.userErrorValidator = userErrorValidator;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-		this.jwtService = jwtService;
 		this.authenticationManager = authenticationManager;
 	}
 
@@ -83,10 +79,7 @@ public class UserService {
 
 	public User readByUsername(String username) {
 		User user = userRepository.findUserByUsername(username);
-		if (user != null) {
-			var jwtToken = jwtService.generateToken(user);
-			user.setJwt(jwtToken);
-		}
+
 		return user;
 	}
 

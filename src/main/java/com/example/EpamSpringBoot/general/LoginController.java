@@ -1,6 +1,7 @@
 package com.example.EpamSpringBoot.general;
 
 import com.example.EpamSpringBoot.config.bruteforceprotect.DefaultBruteForceProtectorSrvice;
+import com.example.EpamSpringBoot.config.jwt.JwtService;
 import com.example.EpamSpringBoot.general.dto.ChangeLoginDTO;
 import com.example.EpamSpringBoot.general.dto.LoginDTO;
 import com.example.EpamSpringBoot.trainee.TraineeService;
@@ -47,15 +48,23 @@ public class LoginController {
 	@Autowired
 	DefaultBruteForceProtectorSrvice defaultBruteForceProtectorSrvice;
 
+	@Autowired
+	JwtService jwtService;
+
 	private static final Logger logger = LogManager.getLogger(LoginController.class);
 
 	@GetMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
 		User user = userService.readByUsername(loginDTO.getUsername());
+		String jwt = null;
 		if (user == null) {
 			Map<String, String> map = new HashMap<>();
 			map.put("message", "your account doesnot exist");
 			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		}
+		else {
+			jwt = jwtService.generateToken(user);
+
 		}
 		LocalDateTime blockTime = user.getLockTime();
 		LocalDateTime dueTime = null;
@@ -89,7 +98,6 @@ public class LoginController {
 		defaultBruteForceProtectorSrvice.resetBruteForceAttack(loginDTO.getUsername());
 
 		Map<String, Object> jsonResponse = new HashMap<>();
-		String jwt = user.getJwt();
 		jsonResponse.put("token", jwt);
 		return ResponseEntity.ok(jsonResponse);
 	}

@@ -42,8 +42,6 @@ public class User implements UserDetails {
 
 	private Boolean isActive;
 
-	private String jwt;
-
 	public LocalDateTime getLockTime() {
 		return lockTime;
 	}
@@ -81,14 +79,6 @@ public class User implements UserDetails {
 
 	public void setRole(Role role) {
 		this.role = role;
-	}
-
-	public String getJwt() {
-		return jwt;
-	}
-
-	public void setJwt(String jwt) {
-		this.jwt = jwt;
 	}
 
 	public User() {
