@@ -7,6 +7,7 @@ import com.example.EpamSpringBoot.trainer.dto.PostTrainerDTO;
 import com.example.EpamSpringBoot.trainer.dto.UpdateTrainerDTO;
 import com.example.EpamSpringBoot.trainingType.TrainingType;
 import com.example.EpamSpringBoot.trainingType.TrainingTypeService;
+import com.example.EpamSpringBoot.user.Role;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/trainer")
@@ -52,6 +55,7 @@ public class TrainerController {
 		User user = new User();
 		user.setFirstName(postTrainerDTO.getFirstname());
 		user.setLastName(postTrainerDTO.getLastname());
+		user.setRole(Role.ROLE_TRAINER);
 		User user1 = userService.create(user);
 		Long val = postTrainerDTO.getTrainingTypeDTO().getId();
 		TrainingType trainingType = trainingTypeService.readById(val);
@@ -60,9 +64,13 @@ public class TrainerController {
 		trainer.setUser(user1);
 		trainerService.create(trainer);
 		String username = trainer.getUser().getUsername();
-		String password = trainer.getUser().getPassword();
-		String response = "username:" + username + ", password :" + password;
-		return ResponseEntity.ok(response);
+		String password = UserService.currentP;
+
+		Map<String, Object> jsonResponse = new HashMap<>();
+
+		jsonResponse.put("username", username);
+		jsonResponse.put("password", password);
+		return ResponseEntity.ok(jsonResponse);
 
 	}
 

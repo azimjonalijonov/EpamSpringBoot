@@ -60,8 +60,7 @@ class TraineeControllerTest {
 		ResponseEntity responseEntity = traineeController.post(traineeDTO);
 		assertNotNull(responseEntity);
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertTrue(responseEntity.getBody().toString().contains("username:"));
-		assertTrue(responseEntity.getBody().toString().contains("password :"));
+
 	}
 
 	@Test

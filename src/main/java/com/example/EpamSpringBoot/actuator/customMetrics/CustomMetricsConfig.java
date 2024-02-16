@@ -11,7 +11,7 @@ public class CustomMetricsConfig {
 	@Bean
 	public MeterRegistryCustomizer<MeterRegistry> addCustomTags() {
 
-		return (registry -> registry.config().commonTags("region", "us-east-1").commonTags("server", "dev"));
+		return (registry -> registry.config().commonTags("region", "us-east-1").commonTags("server", "default"));
 	}
 
 }

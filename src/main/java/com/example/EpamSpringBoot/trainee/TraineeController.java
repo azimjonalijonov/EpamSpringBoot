@@ -7,6 +7,7 @@ import com.example.EpamSpringBoot.traineeTrainers.TraineeTrainerService;
 import com.example.EpamSpringBoot.trainer.Trainer;
 import com.example.EpamSpringBoot.trainer.TrainerService;
 import com.example.EpamSpringBoot.training.Training;
+import com.example.EpamSpringBoot.user.Role;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/trainee")
@@ -47,7 +50,7 @@ public class TraineeController {
 	}
 
 	@PostMapping("/post")
-	public ResponseEntity post(@RequestBody PostTraineeDTO traineeDTO) {
+	public ResponseEntity<?> post(@RequestBody PostTraineeDTO traineeDTO) {
 
 		if (traineeDTO.getFirstname().equals(null) || traineeDTO.getLastname().equals(null)) {
 			throw new RuntimeException("Firstname and lastnmae required");
@@ -55,6 +58,7 @@ public class TraineeController {
 		User user = new User();
 		user.setFirstName(traineeDTO.getFirstname());
 		user.setLastName(traineeDTO.getLastname());
+		user.setRole(Role.ROLE_TRAINEE);
 		User user1 = userService.create(user);
 		Trainee trainee = new Trainee();
 		trainee.setUser(user1);
@@ -62,9 +66,12 @@ public class TraineeController {
 		trainee.setDateOfBirth(traineeDTO.getDob());
 		Trainee trainee1 = traineeService.create(trainee);
 		String username = trainee1.getUser().getUsername();
-		String password = trainee1.getUser().getPassword();
-		String response = "username:" + username + ", password :" + password;
-		return ResponseEntity.ok(response);
+		String password = UserService.currentP;
+		Map<String, Object> jsonResponse = new HashMap<>();
+
+		jsonResponse.put("username", username);
+		jsonResponse.put("password", password);
+		return ResponseEntity.ok(jsonResponse);
 	}
 
 	@GetMapping("/get")

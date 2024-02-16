@@ -1,9 +1,12 @@
 package com.example.EpamSpringBoot.user;
 
+import com.example.EpamSpringBoot.config.jwt.JwtService;
 import com.example.EpamSpringBoot.util.exception.ValidatorException;
 import com.example.EpamSpringBoot.util.validation.impl.UserErrorValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +19,23 @@ public class UserService {
 
 	private final UserErrorValidator userErrorValidator;
 
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	private final JwtService jwtService;
+
+	private final AuthenticationManager authenticationManager;
+
+	public static String currentP;
+
 	@Autowired
-	public UserService(UserRepository userRepository, UserErrorValidator userErrorValidator) {
+	public UserService(UserRepository userRepository, UserErrorValidator userErrorValidator,
+			BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService,
+			AuthenticationManager authenticationManager) {
 		this.userRepository = userRepository;
 		this.userErrorValidator = userErrorValidator;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.jwtService = jwtService;
+		this.authenticationManager = authenticationManager;
 	}
 
 	public List<User> readAll() {
@@ -40,9 +56,11 @@ public class UserService {
 			String username = generateUsername(createRequest.getFirstName(), createRequest.getLastName());
 			String password = generatePassword();
 			createRequest.setUsername(username);
-			createRequest.setPassword(password);
-			userRepository.save(createRequest);
-			return createRequest;
+			createRequest.setPassword(bCryptPasswordEncoder.encode(password));
+			User user = userRepository.save(createRequest);
+			currentP = password;
+
+			return user;
 		}
 		else {
 			throw new ValidatorException("Something wrong with parameters");
@@ -64,7 +82,12 @@ public class UserService {
 	}
 
 	public User readByUsername(String username) {
-		return userRepository.findUserByUsername(username);
+		User user = userRepository.findUserByUsername(username);
+		if (user != null) {
+			var jwtToken = jwtService.generateToken(user);
+			user.setJwt(jwtToken);
+		}
+		return user;
 	}
 
 	public void deleteById(Long id) {

@@ -42,9 +42,7 @@ public class TrainingTypeController {
 			throw new RuntimeException("user does not exist");
 		}
 		User user = userService.readByUsername(username);
-		if (!user.getPassword().equals(password)) {
-			throw new RuntimeException("wrong password");
-		}
+
 		if (trainingTypeDTO.getName() == null) {
 			throw new RuntimeException("name must be placed");
 		}

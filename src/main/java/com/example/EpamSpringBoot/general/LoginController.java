@@ -1,5 +1,6 @@
 package com.example.EpamSpringBoot.general;
 
+import com.example.EpamSpringBoot.config.bruteforceprotect.DefaultBruteForceProtectorSrvice;
 import com.example.EpamSpringBoot.general.dto.ChangeLoginDTO;
 import com.example.EpamSpringBoot.general.dto.LoginDTO;
 import com.example.EpamSpringBoot.trainee.TraineeService;
@@ -7,16 +8,25 @@ import com.example.EpamSpringBoot.trainer.TrainerService;
 import com.example.EpamSpringBoot.user.User;
 import com.example.EpamSpringBoot.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api")
 public class LoginController {
 
 	@Autowired
@@ -28,27 +38,60 @@ public class LoginController {
 	@Autowired
 	TrainerService trainerService;
 
-	@GetMapping("/login")
-	public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
-		if (loginDTO.getUsername().equals(null) || loginDTO.getPassword().equals(null)) {
-			return ResponseEntity.badRequest().body("Username or password should not be null");
-		}
-		User user = null;
-		String username = loginDTO.getUsername();
-		if (traineeService.readByUsername(username) != null) {
-			user = traineeService.readByUsername(username).getUser();
-		}
-		else if (trainerService.readByUsername(username) != null) {
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
-			user = trainerService.readByUsername(username).getUser();
+	@Autowired
+	AuthenticationManager authenticationManager;
+
+	@Autowired
+	DefaultBruteForceProtectorSrvice defaultBruteForceProtectorSrvice;
+
+	private static final Logger logger = LogManager.getLogger(LoginController.class);
+
+	@GetMapping("/login")
+	public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+		User user = userService.readByUsername(loginDTO.getUsername());
+		if (user == null) {
+			Map<String, String> map = new HashMap<>();
+			map.put("message", "your account doesnot exist");
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}
-		else {
-			return ResponseEntity.badRequest().body("no user with this username");
+		LocalDateTime blockTime = user.getLockTime();
+		LocalDateTime dueTime = null;
+		if (blockTime != null) {
+			dueTime = blockTime.plusMinutes(1);
 		}
-		if (!user.getPassword().equals(loginDTO.getPassword())) {
-			return ResponseEntity.badRequest().body("password mismatch");
+
+		if (blockTime != null && dueTime != null && dueTime.isAfter(LocalDateTime.now())) {
+			Map<String, String> map = new HashMap<>();
+			map.put("error: ", "you can not login because of  too many wrong attempts ");
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		if (blockTime != null && dueTime != null && dueTime.isBefore(LocalDateTime.now())) {
+			defaultBruteForceProtectorSrvice.resetBruteForceAttack(loginDTO.getUsername());
+
+		}
+
+		try {
+
+			authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			Map<String, String> map = new HashMap<>();
+			map.put("message", "your credentials are incorrect");
+			return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+		}
+
+		defaultBruteForceProtectorSrvice.resetBruteForceAttack(loginDTO.getUsername());
+
+		Map<String, Object> jsonResponse = new HashMap<>();
+		String jwt = user.getJwt();
+		jsonResponse.put("token", jwt);
+		return ResponseEntity.ok(jsonResponse);
 	}
 
 	@PutMapping("/update")
